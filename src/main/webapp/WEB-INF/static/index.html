@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Markov Chain</title>
+    <base href="/">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="webjars/jquery/3.3.1/jquery.js"></script>
+    <script src="webjars/bootstrap/4.1.1/js/bootstrap.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<form id="form">
+    <div class="form-group">
+        <label for="word">Word to start with (must be part of text)</label>
+        <input name="word" type="word" class="form-control" id="word" placeholder="sample word">
+    </div>
+    <div class="form-group">
+        <label for="text">Text</label>
+        <textarea name="text" class="form-control" placeholder="paste your text here" id="text" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">generate</button>
+</form>
+<script>
+      $('#form').submit(function(event) {
+          $.post("/dotheneedfull", {text: $('#text').val(), word: $('#word').val()})
+          .done(function(data) {
+            $('#resultLabel').html($('#word').val());
+            $('#resultText').html(data);
+            $('#result').modal();
+          })
+          .fail(function(xhr) {
+            $('#resultLabel').html('Ooops! An error has occurred.');
+            $('#resultText').html(xhr.responseText);
+            $('#result').modal()
+          });
+          event.preventDefault();
+      });
+
+      $('#word').keypress(function(e){
+            var key = String.fromCharCode(e.which);
+            if(!key.match(/[A-Za-z]/)) {
+                return false;
+            }
+      })
+    </script>
+<div class="modal fade" id="result" tabindex="-1" role="dialog" aria-labelledby="resultLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="resultText">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Oh well</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
